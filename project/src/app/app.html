@@ -1,0 +1,39 @@
+<div *ngIf="employeesList$ | async as employees">
+  <table>
+    <thead>
+      <tr>
+        <th>Employee name</th>
+        <th>Total time worked</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let employee of employees"
+        [class.low-hours]="hasWorkedLessThan100Hours(employee.totalMinutes)"
+      >
+        <td>{{ employee.employeeName }}</td>
+        <td>{{ getTotalTimeWorked(employee.totalMinutes) }}</td>
+        <td>
+          <a href="#" (click)="editEmployee(employee); $event.preventDefault()">Edit</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<section class="chart-container" *ngIf="chartData$ | async as chartData; else loading">
+  <h2>Total time worked by employee</h2>
+  <canvas
+    baseChart
+    [data]="chartData"
+    [type]="'pie'"
+    [options]="pieChartOptions"
+    [plugins]="pieChartPlugins"
+    aria-label="% of working hours per employee"
+  ></canvas>
+</section>
+
+<ng-template #loading>
+  <p>Loading data...</p>
+</ng-template>
